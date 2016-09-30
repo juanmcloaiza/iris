@@ -103,6 +103,12 @@ except ImportError:
 else:
     SAMPLE_DATA_AVAILABLE = True
 
+try:
+    import nc_time_axis
+    NC_TIME_AXIS_AVAILABLE = True
+except ImportError:
+    NC_TIME_AXIS_AVAILABLE = False
+
 
 #: Basepath for test results.
 _RESULT_PATH = os.path.join(os.path.dirname(__file__), 'results')
@@ -749,6 +755,18 @@ class IrisTest(unittest.TestCase):
         # Return patch replacement object.
         return start_result
 
+    def assertArrayShapeStats(self, result, shape, mean, std_dev):
+        """
+        Assert that the result, a cube, has the provided shape and that the
+        mean and standard deviation of the data array are also as provided.
+        Thus build confidence that a cube processing operation, such as a
+        cube.regrid, has maintained its behaviour.
+ 
+        """
+        self.assertEqual(result.shape, shape)
+        self.assertAlmostEqual(result.data.mean(), mean, places=5)
+        self.assertAlmostEqual(result.data.std(), std_dev, places=5)
+
 
 get_result_path = IrisTest.get_result_path
 
@@ -931,6 +949,11 @@ skip_grib = unittest.skipIf(not GRIB_AVAILABLE, 'Test(s) require "gribapi", '
 skip_sample_data = unittest.skipIf(not SAMPLE_DATA_AVAILABLE,
                                    ('Test(s) require "iris_sample_data", '
                                     'which is not available.'))
+
+
+skip_nc_time_axis = unittest.skipIf(
+    not NC_TIME_AXIS_AVAILABLE,
+    'Test(s) require "nc_time_axis", which is not available.')
 
 
 def no_warnings(func):
