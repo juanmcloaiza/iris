@@ -89,7 +89,8 @@ class database():
         except FileNotFoundError:
             raise
 
-        print("Loading database...")
+        print("Loading database from catalogue {}...".format(self.catalogue_filepath))
+        t_0 = time.clock()
 
         #Here is an extract of a sample catalogue file.
         #The next line to the label "FILE:" is the filename of a database file.
@@ -207,6 +208,7 @@ class database():
                     self.metadatas[ifile].append(line[:-1])
 
         print("...database loaded.")
+        print("timing: Time taken for parsing {} files in catalogue: {} seconds".format(ifile+1,time.clock() - t_0))
         return
 
     #When initializing a database object, if a catalogue file is not
@@ -241,7 +243,7 @@ class database():
             if(i%100 == 0):
                 files_remaining = len(files_to_catalogue) - i
                 minutes_remaining = files_remaining * ( ( time.clock() - t_a ) / 100.0 ) / 60.0
-                print("Time taken for adding {} files to catalogue: {} seconds".format(i,time.clock() - t_0))
+                print("timing: Time taken for adding {} files to catalogue: {} seconds".format(i,time.clock() - t_0))
                 print("{} files to go. Estimated time remaining: {} minutes".format( files_remaining, minutes_remaining ) )
                 t_a = time.clock()
 
@@ -283,6 +285,7 @@ class database():
 
         #
         print("...catalogue created.")
+        print("timing: Time taken for adding {} files to catalogue: {} seconds".format(i,time.clock() - t_0))
 
         #If there were files inside the databae location that were not
         #loaded, let the user know by printing a message.
@@ -326,12 +329,13 @@ class database():
             if(I%100 == 0):
                 files_remaining = len(self.datafiles) - I
                 minutes_remaining = files_remaining * ( ( time.clock() - t_a ) / 100.0 ) / 60.0
-                print("Time taken for exploring {} files in catalogue: {} seconds".format(I,time.clock() - t_0))
+                print("timing: Time taken for exploring {} files in catalogue: {} seconds".format(I,time.clock() - t_0))
                 print("{} files to go. Estimated time remaining: {} minutes".format( files_remaining, minutes_remaining ) )
                 t_a = time.clock()
 
 
         loaded_cubes = iris.cube.CubeList(loaded_cubes)
+        print("timing: Time taken for loading cubes from {} files in catalogue: {} seconds".format(I,time.clock() - t_0))
     
         #If the list of cubes is empty, print a message including
         #possible cube names that the user may have intended.
@@ -369,7 +373,7 @@ class database():
         #to the list if necessary. If an error occurs with a file, add it
         #to the not_read_files list.
         i = 0
-        print("Loading directly from {} files...".format(len(files_to_load)))
+        print("Loading cubes from {} files without using catalogue...".format(len(files_to_load)))
         t_0 = time.clock()
         t_a = time.clock()
         for each_file in files_to_load:
@@ -379,7 +383,7 @@ class database():
             if(i%100 == 0):
                 files_remaining = len(files_to_load) - i
                 minutes_remaining = files_remaining * ( ( time.clock() - t_a ) / 100.0 ) / 60.0
-                print("Time taken for reading {} files: {} seconds".format(i,time.clock() - t_0))
+                print("timing: Time taken for reading {} files: {} seconds".format(i,time.clock() - t_0))
                 print("{} files to go. Estimated time remaining: {} minutes".format( files_remaining, minutes_remaining ) )
                 t_a = time.clock()
 
@@ -412,6 +416,8 @@ class database():
             print('No cubes found with "{}" in its name'.format(name_requested))
         else:
             print("{} cubes found".format(len(loaded_cubes)))
+        
+        print("timing: Time taken for loading cubes from {} files without catalogue: {} seconds".format(i,time.clock() - t_0))
 
         #If there were problematic files, warn the user:
         if( len(not_read_files) > 0 ):

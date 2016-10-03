@@ -17,21 +17,15 @@ import time
 import os
 
 utils.cleanup_start()
-time_a = time.clock()
-database_dir = ('/home/esp-shared-b/RegCM_Data/CAM2')
+#database_dir = ('/home/esp-shared-b/RegCM_Data/CAM2')
 #database_dir = ('/home/esp-shared-b/RegCM_Data/regcm3')
 #database_dir = ('/home/esp-shared-b/RegCM_Data')
-all_cubes = pipistrello.database(database_dir,new_catalogue=True)
+#database_dir = '/home/esp-shared-a/GlobalModels/CMIP5/monthly'
 
-cubesA = all_cubes.load_cubes('temperature')
-time_b = time.clock()
-print(cubesA)
-#for cube in cubesA:
-#    print(cube)
-
-print("total time taken: {} seconds.\n".format(time_b - time_a))
-
-
+database_dir = '/home/juan/MHPC-Thesis/NetCDF_Files'
+my_database = pipistrello.database(database_dir,new_catalogue=True)
+cubesA = my_database.load_cubes('temperature')
+cubesB = my_database.load_no_catalogue('temperature')
 
 #This cleans up leftover files (compiled python files)
 #and prints a good-bye message.
