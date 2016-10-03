@@ -46,9 +46,6 @@ class database():
         #List of all filenames in the database:
         self.datafiles = [] 
         
-        #List of all filenames in the database:
-        self.datafiles = [] 
-        
         #List of lists. 
         #The [i][j] entry will contain the cube j in file i.
         self.cubes = [] 
@@ -84,9 +81,7 @@ class database():
 
 
     #This is the core function for creating a database object:
-    #It scans, from the catalogue file, all the available cubes.
-    #It creates a directory of the cubes contained in each file,
-    #its coordinates and its metadata. No cubes is ever loaded.
+    #It scans from the catalogue file all the available cubes.
     def load(self):
         #Where the database info is going to be written:
         try:
@@ -250,9 +245,7 @@ class database():
                 print("{} files to go. Estimated time remaining: {} minutes".format( files_remaining, minutes_remaining ) )
                 t_a = time.clock()
 
-            #We want the catalogue to contain full path filenames,
-            #Even if only printing the filename inside the database
-            #directory.
+            #We want the catalogue to contain full path filenames.
             each_file_path = each_file
             print("reading "+each_file)
             try:    
@@ -298,7 +291,7 @@ class database():
             for item in not_read_files:
                 print(item)
 
-        #Load the databae with the catalogue just created.
+        #Load the database with the catalogue just created.
         self.load()
 
     #This function adds a file to the catalogue:
@@ -318,7 +311,6 @@ class database():
         t_0 = time.clock()
         t_a = time.clock()
         for i in range(len(self.datafiles)):
-            I = i+1
             cubes_to_load = []
             for j in range(len(self.cubes[i])):
                 cube_name = self.cubes[i][j]
@@ -330,6 +322,7 @@ class database():
                 except:
                     raise
 
+            I = i+1
             if(I%100 == 0):
                 files_remaining = len(self.datafiles) - I
                 minutes_remaining = files_remaining * ( ( time.clock() - t_a ) / 100.0 ) / 60.0
